@@ -39,6 +39,7 @@ nav:
   - Concepts:
       - Overview: concepts/index.md
       - Registry: concepts/registry.md
+      - Rich Queries: concepts/rich-queries.md
       - Middleware: concepts/middleware.md
       - Annotations: concepts/annotations.md
   - Guides:

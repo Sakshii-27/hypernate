@@ -4,6 +4,7 @@ package hu.bme.mit.ftsrg.hypernate.registry;
 import com.jcabi.aspects.Loggable;
 import hu.bme.mit.ftsrg.hypernate.annotations.AttributeInfo;
 import hu.bme.mit.ftsrg.hypernate.annotations.PrimaryKey;
+import hu.bme.mit.ftsrg.hypernate.query.RichQueryBuilder;
 import hu.bme.mit.ftsrg.hypernate.util.JSON;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -204,6 +205,32 @@ public class Registry {
               return EntityUtil.fromBuffer(value, clazz);
             })
         .collect(Collectors.toList());
+  }
+
+  /**
+   * Begin a fluent CouchDB rich query for entities of the given type.
+   *
+   * <p>The returned {@link RichQueryBuilder} supports a chainable API for building conditions,
+   * sorting, and pagination:
+   *
+   * <pre>{@code
+   * List<Asset> results = registry.query(Asset.class)
+   *     .where("color").is("blue")
+   *     .and("size").greaterThan(10)
+   *     .and("owner").in("Alice", "Bob")
+   *     .sortBy("value", SortOrder.DESC)
+   *     .limit(50)
+   *     .execute();
+   * }</pre>
+   *
+   * <p><b>Note:</b> Rich queries require CouchDB as the Fabric state database.
+   *
+   * @param clazz the entity class to query
+   * @param <T> the entity type
+   * @return a new {@link RichQueryBuilder} bound to this registry's stub
+   */
+  public <T> RichQueryBuilder<T> query(final Class<T> clazz) {
+    return new RichQueryBuilder<>(stub, clazz, EntityUtil.getType(clazz));
   }
 
   @Loggable(Loggable.DEBUG)

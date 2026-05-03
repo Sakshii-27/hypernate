@@ -166,6 +166,24 @@ Asset toDelete = reg.mustRead(Asset.class, assetID);
 ctx.getRegistry().mustDelete(toDelete);
 ```
 
+### Rich Queries
+
+Hypernate abstracts CouchDB Mango queries behind a composable, type-safe Java API integrated directly into the `Registry`. This allows you to construct and execute complex queries without dealing with raw JSON strings.
+
+The following code snippet shows how to build and execute a rich query:
+
+```java
+List<Asset> results = ctx.getRegistry().query(Asset.class)
+    .where("color").is("blue")
+    .and("size").greaterThan(10)
+    .and("owner").in("Alice", "Bob")
+    .sortBy("value", SortOrder.DESC)
+    .limit(50)
+    .execute();
+```
+
+For a detailed design document of the Rich Query Builder API, see the [Rich Queries documentation](docs/concepts/rich-queries.md).
+
 
 ### Middleware
 
